@@ -13,7 +13,7 @@
       "TWITTER_EMAIL": "",
       "TWITTER_POLL_INTERVAL": "300",
       "GROK_API_KEY": "",
-      "TWITTER_TARGET_USERS": "VitalikButerin,ethkyiv_ua,ethereum_ua,ethereum,zero1_labs,rivensai,rostyketh",
+      "TWITTER_TARGET_USERS": "VitalikButerin,ethkyiv_ua,ethereum_ua,ethereum,zero1_labs,rivensai,rostyketh,CryptoMinesApp,Zone_PlaytoEarn,DRAGONVERSE_OA",
       "TWITTER_SEARCH_ENABLE": "true",
       "POST_INTERVAL_MIN": "5",
       "POST_INTERVAL_MAX": "10"
