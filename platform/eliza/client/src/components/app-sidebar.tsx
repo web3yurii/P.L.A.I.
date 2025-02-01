@@ -22,29 +22,48 @@ import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
 import { MetaMaskSDK, SDKProvider } from "@metamask/sdk"
 import { useEffect, useState } from 'react';
 import Storage from '../Storage';
+import detectEthereumProvider from "@metamask/detect-provider"
+
+const metaMask = new MetaMaskSDK({
+    dappMetadata: {
+        name: "P.L.A.I.",
+        url: window.location.href
+    }
+});
 
 export function AppSidebar() {
-    const { loggedIn, setLoggedIn } = Storage();
+    const { walletAddress, setWalletAddress } = Storage();
     const location = useLocation();
     const query = useQuery({
         queryKey: ["agents"],
         queryFn: () => apiClient.getAgents(),
         refetchInterval: 5_000,
     });
-    const metaMask = new MetaMaskSDK({
-        dappMetadata: {
-            name: "P.L.A.I.",
-            url: window.location.href
-        }
-    });
 
     const connectWallet = async () => {
         const connect = await metaMask.connect();
 
         if ( connect.length !== 0 && (typeof connect[0] === 'string') ) {
-            setLoggedIn(connect[0]);
+            setWalletAddress(connect[0]);
         }
     }
+
+    const getAccounts = async (mm: any) => {
+        const provider = await mm?.getProvider();
+        const accounts: any = await provider?.request({ 
+            method: "eth_requestAccounts" 
+        });
+
+        const account: string = accounts[0];
+
+        setWalletAddress(account);
+    }
+
+    useEffect(() => {
+        getAccounts(metaMask);
+    }, [metaMask]);
+
+    console.log(walletAddress);
 
     const agents = query?.data?.agents;
 
@@ -120,8 +139,14 @@ export function AppSidebar() {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton onClick={() => connectWallet()}>
-                            <img style={{width: '17px'}} src={MetaMask} /> Connect Wallet
+                        <SidebarMenuButton className={walletAddress && 'bg-white text-black'} onClick={() => connectWallet()}>
+                            {walletAddress ? <div><span style={{
+                                borderRadius: '100%', 
+                                background: 'green', 
+                                width: '5px',
+                                height: '5px',
+                                display: 'block'
+                            }}></span></div> : <img style={{width: '17px'}} src={MetaMask} /> } <span className="w-40 overflow-hidden whitespace-nowrap text-ellipsis">{walletAddress ? walletAddress : 'Connect Wallet'}</span>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <SidebarMenuItem>
