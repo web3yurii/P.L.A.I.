@@ -11,19 +11,19 @@ import {
 
 export const startGame: Action = {
     name: "START_GAME",
-    similes: ["Go play", "i want to play", "start game"],
+    similes: ["Почати гру", "Я хочу пограти", "Старт гри"],
     description:
-        "Starting a game with the user. All sessions continue until the user decides to stop.",
+        "Запускає гру, де користувач повинен відповідати на питання та виконувати завдання",
     examples: [
         [
             {
                 user: "{{user1}}",
-                content: { text: "Start to play" },
+                content: { text: "Старт гри" },
             },
             {
                 user: "{{agent}}",
                 content: {
-                    text: "I see you want to play a game. Let's start!",
+                    text: "Я бачу ти хочеш пограти в гру. Давай почнемо!",
                     action: "START_GAME",
                 },
             },
@@ -48,7 +48,7 @@ export const startGame: Action = {
         });
 
         callback({
-            text: "I see you want to play a game. Let's start!",
+            text: "Я бачу ти хочеш пограти в гру. Давай почнемо!",
         });
     },
 };
