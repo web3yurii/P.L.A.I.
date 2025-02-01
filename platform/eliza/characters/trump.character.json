@@ -1,6 +1,9 @@
 {
     "name": "trump",
-    "clients": ["direct"],
+    "clients": [
+        "direct",
+        "telegram"
+    ],
     "modelProvider": "openai",
     "settings": {
         "secrets": {},
