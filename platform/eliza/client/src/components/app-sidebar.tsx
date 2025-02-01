@@ -20,9 +20,11 @@ import { Book, Cog, User } from "lucide-react";
 import ConnectionStatus from "./connection-status";
 import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
 import { MetaMaskSDK, SDKProvider } from "@metamask/sdk"
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react';
+import Storage from '../Storage';
 
 export function AppSidebar() {
+    const { loggedIn, setLoggedIn } = Storage();
     const location = useLocation();
     const query = useQuery({
         queryKey: ["agents"],
@@ -31,10 +33,18 @@ export function AppSidebar() {
     });
     const metaMask = new MetaMaskSDK({
         dappMetadata: {
-            name: "Example JavaScript Dapp",
+            name: "P.L.A.I.",
             url: window.location.href
         }
     });
+
+    const connectWallet = async () => {
+        const connect = await metaMask.connect();
+
+        if ( connect.length !== 0 && (typeof connect[0] === 'string') ) {
+            setLoggedIn(connect[0]);
+        }
+    }
 
     const agents = query?.data?.agents;
 
@@ -110,7 +120,7 @@ export function AppSidebar() {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton onClick={() => metaMask.connect()}>
+                        <SidebarMenuButton onClick={() => connectWallet()}>
                             <img style={{width: '17px'}} src={MetaMask} /> Connect Wallet
                         </SidebarMenuButton>
                     </SidebarMenuItem>
