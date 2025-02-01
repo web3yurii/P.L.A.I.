@@ -11,7 +11,7 @@
 			"TWITTER_EMAIL": "",
 			"TWITTER_POLL_INTERVAL": "300",
 			"GROK_API_KEY": "",
-			"TWITTER_TARGET_USERS": "VitalikButerin,ethkyiv_ua,ethereum_ua,ethereum,zero1_labs,rivensai,rostyketh,CryptoMinesApp,Zone_PlaytoEarn,DRAGONVERSE_OA",
+			"TWITTER_TARGET_USERS": "VitalikButerin,ethkyiv_ua,ethereum_ua,ethereum,zero1_labs,rivensai,rostyketh,CryptoMinesApp,Zone_PlaytoEarn,DRAGONVERSE_OA,TicTacToe_P2E,ShanHaiGameFi,IdleFishing_P2E,AtomCollector,Atrun_game,galaxycash_app,CoCoMonOfficial,smashplay2win,HODL_P2E,RemnantLabs,joystickclub,ShoeFyio,BUSY_Gam3r,AngelsCreedGame,elephanttokenn,PlayToEarn,iworldgamenet,Saiyan_P2E,CryptoNGT,elfworld99,Naughty_DRG,Monster_Saga,metakillers,LudusGameNFT,cyverseofficial,MikePlayToEarn,playtoearnmnl,Lunauniverse_,deathpunchgame,PlayToEarn_com,FredrikBelle,Play_toEarn,the_orbwars,CryptoSwordsP2E,BlockchainCutie,JackSh1tCoin",
 			"TWITTER_SEARCH_ENABLE": "true",
 			"POST_INTERVAL_MIN": "5",
 			"POST_INTERVAL_MAX": "10"
