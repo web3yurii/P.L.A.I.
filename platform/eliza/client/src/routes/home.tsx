@@ -13,8 +13,11 @@ import { apiClient } from "@/lib/api";
 import { NavLink } from "react-router";
 import type { UUID } from "@elizaos/core";
 import { formatAgentName } from "@/lib/utils";
+import Storage from '../Storage';
+import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
 
 export default function Home() {
+    const { metaMask, walletAddress, setWalletAddress } = Storage();
     const query = useQuery({
         queryKey: ["agents"],
         queryFn: () => apiClient.getAgents(),
@@ -40,26 +43,22 @@ export default function Home() {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <div className="flex items-center gap-4 w-full">
+                            <div className="flex items-center gap-4 w-full justify-center">
+                                {walletAddress ? 
+                                
                                 <NavLink
                                     to={`/chat/${agent.id}`}
                                     className="w-full grow"
                                 >
-                                    <Button
+                                     <Button
                                         variant="outline"
                                         className="w-full grow"
-                                    >
-                                        Chat
-                                    </Button>
-                                </NavLink>
-                                <NavLink
-                                    to={`/settings/${agent.id}`}
-                                    key={agent.id}
-                                >
-                                    <Button size="icon" variant="outline">
-                                        <Cog />
-                                    </Button>
-                                </NavLink>
+                                    >Chat</Button>
+                                </NavLink> : 
+                                
+                                <span className="text-center">Connect wallet to proceed</span>
+                                
+                                }
                             </div>
                         </CardFooter>
                     </Card>

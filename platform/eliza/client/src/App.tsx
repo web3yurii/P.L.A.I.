@@ -9,6 +9,8 @@ import Chat from "./routes/chat";
 import Overview from "./routes/overview";
 import Home from "./routes/home";
 import useVersion from "./hooks/use-version";
+import { useEffect, useState } from 'react';
+import Storage from './Storage';
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -19,6 +21,23 @@ const queryClient = new QueryClient({
 });
 
 function App() {
+    const { metaMask, walletAddress, setWalletAddress } = Storage();
+
+    const getAccounts = async (mm: any) => {
+        const provider = await mm?.getProvider();
+        const accounts: any = await provider?.request({ 
+            method: "eth_requestAccounts" 
+        });
+
+        const account: string = accounts[0];
+
+        setWalletAddress(account);
+    }
+
+    useEffect(() => {
+        getAccounts(metaMask);
+    }, [metaMask]);
+
     useVersion();
     return (
         <QueryClientProvider client={queryClient}>

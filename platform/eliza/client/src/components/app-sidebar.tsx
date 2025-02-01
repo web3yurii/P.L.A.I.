@@ -19,20 +19,12 @@ import type { UUID } from "@elizaos/core";
 import { Book, Cog, User } from "lucide-react";
 import ConnectionStatus from "./connection-status";
 import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
-import { MetaMaskSDK, SDKProvider } from "@metamask/sdk"
 import { useEffect, useState } from 'react';
 import Storage from '../Storage';
-import detectEthereumProvider from "@metamask/detect-provider"
-
-const metaMask = new MetaMaskSDK({
-    dappMetadata: {
-        name: "P.L.A.I.",
-        url: window.location.href
-    }
-});
+import detectEthereumProvider from "@metamask/detect-provider";
 
 export function AppSidebar() {
-    const { walletAddress, setWalletAddress } = Storage();
+    const { metaMask, walletAddress, setWalletAddress } = Storage();
     const location = useLocation();
     const query = useQuery({
         queryKey: ["agents"],
@@ -47,23 +39,6 @@ export function AppSidebar() {
             setWalletAddress(connect[0]);
         }
     }
-
-    const getAccounts = async (mm: any) => {
-        const provider = await mm?.getProvider();
-        const accounts: any = await provider?.request({ 
-            method: "eth_requestAccounts" 
-        });
-
-        const account: string = accounts[0];
-
-        setWalletAddress(account);
-    }
-
-    useEffect(() => {
-        getAccounts(metaMask);
-    }, [metaMask]);
-
-    console.log(walletAddress);
 
     const agents = query?.data?.agents;
 
@@ -86,7 +61,7 @@ export function AppSidebar() {
                                     <span className="font-semibold">
                                         P.L.A.I.
                                     </span>
-                                    <span className="">v{info?.version}</span>
+                                    <span className="">v{info?.version} <span className="text-gray-400 text-xs">by M.A.N.Y.</span></span>
                                 </div>
                             </NavLink>
                         </SidebarMenuButton>
@@ -98,7 +73,7 @@ export function AppSidebar() {
                     <SidebarGroupLabel>Agents</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {query?.isPending ? (
+                            {agents?.length === 0 ? (
                                 <div>
                                     {Array.from({ length: 5 }).map(
                                         (_, _index) => (
@@ -147,21 +122,6 @@ export function AppSidebar() {
                                 height: '5px',
                                 display: 'block'
                             }}></span></div> : <img style={{width: '17px'}} src={MetaMask} /> } <span className="w-40 overflow-hidden whitespace-nowrap text-ellipsis">{walletAddress ? walletAddress : 'Connect Wallet'}</span>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <NavLink
-                            to="https://elizaos.github.io/eliza/docs/intro/"
-                            target="_blank"
-                        >
-                            <SidebarMenuButton>
-                                <Book /> Documentation
-                            </SidebarMenuButton>
-                        </NavLink>
-                    </SidebarMenuItem>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton disabled>
-                            <Cog /> Settings
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                     <ConnectionStatus />

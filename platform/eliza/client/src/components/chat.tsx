@@ -23,6 +23,7 @@ import type { IAttachment } from "@/types";
 import { AudioRecorder } from "./audio-recorder";
 import { Badge } from "./ui/badge";
 import { useAutoScroll } from "./ui/chat/hooks/useAutoScroll";
+import Storage from '../Storage';
 
 type ExtraContentFields = {
     user: string;
@@ -43,6 +44,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
+    const { metaMask, walletAddress, setWalletAddress } = Storage();
 
     const queryClient = useQueryClient();
 
@@ -172,200 +174,206 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
     return (
         <div className="flex flex-col w-full h-[calc(100dvh)] p-4">
-            <div className="flex-1 overflow-y-auto">
-                <ChatMessageList 
-                    scrollRef={scrollRef}
-                    isAtBottom={isAtBottom}
-                    scrollToBottom={scrollToBottom}
-                    disableAutoScroll={disableAutoScroll}
-                >
-                    {transitions((style, message: ContentWithUser) => {
-                        const variant = getMessageVariant(message?.user);
-                        return (
-                            <CustomAnimatedDiv
-                                style={{
-                                    ...style,
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    gap: "0.5rem",
-                                    padding: "1rem",
-                                }}
-                            >
-                                <ChatBubble
-                                    variant={variant}
-                                    className="flex flex-row items-center gap-2"
+            {walletAddress ? 
+            
+            <>
+                <div className="flex-1 overflow-y-auto">
+                    <ChatMessageList 
+                        scrollRef={scrollRef}
+                        isAtBottom={isAtBottom}
+                        scrollToBottom={scrollToBottom}
+                        disableAutoScroll={disableAutoScroll}
+                    >
+                        {transitions((style, message: ContentWithUser) => {
+                            const variant = getMessageVariant(message?.user);
+                            return (
+                                <CustomAnimatedDiv
+                                    style={{
+                                        ...style,
+                                        display: "flex",
+                                        flexDirection: "column",
+                                        gap: "0.5rem",
+                                        padding: "1rem",
+                                    }}
                                 >
-                                    {message?.user !== "user" ? (
-                                        <Avatar className="size-8 p-1 border rounded-full select-none">
-                                            <AvatarImage src="/elizaos-icon.png" />
-                                        </Avatar>
-                                    ) : null}
-                                    <div className="flex flex-col">
-                                        <ChatBubbleMessage
-                                            isLoading={message?.isLoading}
-                                        >
-                                            {message?.user !== "user" ? (
-                                                <AIWriter>
-                                                    {message?.text}
-                                                </AIWriter>
-                                            ) : (
-                                                message?.text
-                                            )}
-                                            {/* Attachments */}
-                                            <div>
-                                                {message?.attachments?.map(
-                                                    (attachment: IAttachment) => (
-                                                        <div
-                                                            className="flex flex-col gap-1 mt-2"
-                                                            key={`${attachment.url}-${attachment.title}`}
-                                                        >
-                                                            <img
-                                                                alt="attachment"
-                                                                src={attachment.url}
-                                                                width="100%"
-                                                                height="100%"
-                                                                className="w-64 rounded-md"
-                                                            />
-                                                            <div className="flex items-center justify-between gap-4">
-                                                                <span />
-                                                                <span />
-                                                            </div>
-                                                        </div>
-                                                    )
-                                                )}
-                                            </div>
-                                        </ChatBubbleMessage>
-                                        <div className="flex items-center gap-4 justify-between w-full mt-1">
-                                            {message?.text &&
-                                            !message?.isLoading ? (
-                                                <div className="flex items-center gap-1">
-                                                    <CopyButton
-                                                        text={message?.text}
-                                                    />
-                                                    <ChatTtsButton
-                                                        agentId={agentId}
-                                                        text={message?.text}
-                                                    />
-                                                </div>
-                                            ) : null}
-                                            <div
-                                                className={cn([
-                                                    message?.isLoading
-                                                        ? "mt-2"
-                                                        : "",
-                                                    "flex items-center justify-between gap-4 select-none",
-                                                ])}
+                                    <ChatBubble
+                                        variant={variant}
+                                        className="flex flex-row items-center gap-2"
+                                    >
+                                        {message?.user !== "user" ? (
+                                            <Avatar className="size-8 p-1 border rounded-full select-none">
+                                                <AvatarImage src="/plai-icon.svg" />
+                                            </Avatar>
+                                        ) : null}
+                                        <div className="flex flex-col">
+                                            <ChatBubbleMessage
+                                                isLoading={message?.isLoading}
                                             >
-                                                {message?.source ? (
-                                                    <Badge variant="outline">
-                                                        {message.source}
-                                                    </Badge>
+                                                {message?.user !== "user" ? (
+                                                    <AIWriter>
+                                                        {message?.text}
+                                                    </AIWriter>
+                                                ) : (
+                                                    message?.text
+                                                )}
+                                                {/* Attachments */}
+                                                <div>
+                                                    {message?.attachments?.map(
+                                                        (attachment: IAttachment) => (
+                                                            <div
+                                                                className="flex flex-col gap-1 mt-2"
+                                                                key={`${attachment.url}-${attachment.title}`}
+                                                            >
+                                                                <img
+                                                                    alt="attachment"
+                                                                    src={attachment.url}
+                                                                    width="100%"
+                                                                    height="100%"
+                                                                    className="w-64 rounded-md"
+                                                                />
+                                                                <div className="flex items-center justify-between gap-4">
+                                                                    <span />
+                                                                    <span />
+                                                                </div>
+                                                            </div>
+                                                        )
+                                                    )}
+                                                </div>
+                                            </ChatBubbleMessage>
+                                            <div className="flex items-center gap-4 justify-between w-full mt-1">
+                                                {message?.text &&
+                                                !message?.isLoading ? (
+                                                    <div className="flex items-center gap-1">
+                                                        <CopyButton
+                                                            text={message?.text}
+                                                        />
+                                                        <ChatTtsButton
+                                                            agentId={agentId}
+                                                            text={message?.text}
+                                                        />
+                                                    </div>
                                                 ) : null}
-                                                {message?.action ? (
-                                                    <Badge variant="outline">
-                                                        {message.action}
-                                                    </Badge>
-                                                ) : null}
-                                                {message?.createdAt ? (
-                                                    <ChatBubbleTimestamp
-                                                        timestamp={moment(
-                                                            message?.createdAt
-                                                        ).format("LT")}
-                                                    />
-                                                ) : null}
+                                                <div
+                                                    className={cn([
+                                                        message?.isLoading
+                                                            ? "mt-2"
+                                                            : "",
+                                                        "flex items-center justify-between gap-4 select-none",
+                                                    ])}
+                                                >
+                                                    {message?.source ? (
+                                                        <Badge variant="outline">
+                                                            {message.source}
+                                                        </Badge>
+                                                    ) : null}
+                                                    {message?.action ? (
+                                                        <Badge variant="outline">
+                                                            {message.action}
+                                                        </Badge>
+                                                    ) : null}
+                                                    {message?.createdAt ? (
+                                                        <ChatBubbleTimestamp
+                                                            timestamp={moment(
+                                                                message?.createdAt
+                                                            ).format("LT")}
+                                                        />
+                                                    ) : null}
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </ChatBubble>
-                            </CustomAnimatedDiv>
-                        );
-                    })}
-                </ChatMessageList>
-            </div>
-            <div className="px-4 pb-4">
-                <form
-                    ref={formRef}
-                    onSubmit={handleSendMessage}
-                    className="relative rounded-md border bg-card"
-                >
-                    {selectedFile ? (
-                        <div className="p-3 flex">
-                            <div className="relative rounded-md border p-2">
-                                <Button
-                                    onClick={() => setSelectedFile(null)}
-                                    className="absolute -right-2 -top-2 size-[22px] ring-2 ring-background"
-                                    variant="outline"
-                                    size="icon"
-                                >
-                                    <X />
-                                </Button>
-                                <img
-                                    alt="Selected file"
-                                    src={URL.createObjectURL(selectedFile)}
-                                    height="100%"
-                                    width="100%"
-                                    className="aspect-square object-contain w-16"
-                                />
-                            </div>
-                        </div>
-                    ) : null}
-                    <ChatInput
-                        ref={inputRef}
-                        onKeyDown={handleKeyDown}
-                        value={input}
-                        onChange={({ target }) => setInput(target.value)}
-                        placeholder="Type your message here..."
-                        className="min-h-12 resize-none rounded-md bg-card border-0 p-3 shadow-none focus-visible:ring-0"
-                    />
-                    <div className="flex items-center p-3 pt-0">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <div>
+                                    </ChatBubble>
+                                </CustomAnimatedDiv>
+                            );
+                        })}
+                    </ChatMessageList>
+                </div>
+                <div className="px-4 pb-4">
+                    <form
+                        ref={formRef}
+                        onSubmit={handleSendMessage}
+                        className="relative rounded-md border bg-card"
+                    >
+                        {selectedFile ? (
+                            <div className="p-3 flex">
+                                <div className="relative rounded-md border p-2">
                                     <Button
-                                        variant="ghost"
+                                        onClick={() => setSelectedFile(null)}
+                                        className="absolute -right-2 -top-2 size-[22px] ring-2 ring-background"
+                                        variant="outline"
                                         size="icon"
-                                        onClick={() => {
-                                            if (fileInputRef.current) {
-                                                fileInputRef.current.click();
-                                            }
-                                        }}
                                     >
-                                        <Paperclip className="size-4" />
-                                        <span className="sr-only">
-                                            Attach file
-                                        </span>
+                                        <X />
                                     </Button>
-                                    <input
-                                        type="file"
-                                        ref={fileInputRef}
-                                        onChange={handleFileChange}
-                                        accept="image/*"
-                                        className="hidden"
+                                    <img
+                                        alt="Selected file"
+                                        src={URL.createObjectURL(selectedFile)}
+                                        height="100%"
+                                        width="100%"
+                                        className="aspect-square object-contain w-16"
                                     />
                                 </div>
-                            </TooltipTrigger>
-                            <TooltipContent side="left">
-                                <p>Attach file</p>
-                            </TooltipContent>
-                        </Tooltip>
-                        <AudioRecorder
-                            agentId={agentId}
-                            onChange={(newInput: string) => setInput(newInput)}
+                            </div>
+                        ) : null}
+                        <ChatInput
+                            ref={inputRef}
+                            onKeyDown={handleKeyDown}
+                            value={input}
+                            onChange={({ target }) => setInput(target.value)}
+                            placeholder="Type your message here..."
+                            className="min-h-12 resize-none rounded-md bg-card border-0 p-3 shadow-none focus-visible:ring-0"
                         />
-                        <Button
-                            disabled={!input || sendMessageMutation?.isPending}
-                            type="submit"
-                            size="sm"
-                            className="ml-auto gap-1.5 h-[30px]"
-                        >
-                            {sendMessageMutation?.isPending
-                                ? "..."
-                                : "Send Message"}
-                            <Send className="size-3.5" />
-                        </Button>
-                    </div>
-                </form>
-            </div>
+                        <div className="flex items-center p-3 pt-0">
+                            <Tooltip>
+                                <TooltipTrigger asChild>
+                                    <div>
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            onClick={() => {
+                                                if (fileInputRef.current) {
+                                                    fileInputRef.current.click();
+                                                }
+                                            }}
+                                        >
+                                            <Paperclip className="size-4" />
+                                            <span className="sr-only">
+                                                Attach file
+                                            </span>
+                                        </Button>
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            onChange={handleFileChange}
+                                            accept="image/*"
+                                            className="hidden"
+                                        />
+                                    </div>
+                                </TooltipTrigger>
+                                <TooltipContent side="left">
+                                    <p>Attach file</p>
+                                </TooltipContent>
+                            </Tooltip>
+                            <AudioRecorder
+                                agentId={agentId}
+                                onChange={(newInput: string) => setInput(newInput)}
+                            />
+                            <Button
+                                disabled={!input || sendMessageMutation?.isPending}
+                                type="submit"
+                                size="sm"
+                                className="ml-auto gap-1.5 h-[30px]"
+                            >
+                                {sendMessageMutation?.isPending
+                                    ? "..."
+                                    : "Send Message"}
+                                <Send className="size-3.5" />
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </>
+                
+            : <span className="absolute top-0 left-0 w-full h-screen flex items-center justify-center">Connect wallet to proceed</span> }
         </div>
     );
 }
