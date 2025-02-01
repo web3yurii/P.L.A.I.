@@ -16,12 +16,11 @@ import {
 import { apiClient } from "@/lib/api";
 import { NavLink, useLocation } from "react-router";
 import type { UUID } from "@elizaos/core";
-import { Book, Cog, User } from "lucide-react";
+import { Book, Cog, LogOut, User } from "lucide-react";
 import ConnectionStatus from "./connection-status";
 import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
 import { useEffect, useState } from 'react';
 import Storage from '../Storage';
-import detectEthereumProvider from "@metamask/detect-provider";
 
 export function AppSidebar() {
     const { metaMask, walletAddress, setWalletAddress } = Storage();
@@ -37,6 +36,14 @@ export function AppSidebar() {
 
         if ( connect.length !== 0 && (typeof connect[0] === 'string') ) {
             setWalletAddress(connect[0]);
+        }
+    }
+
+    const disconnectWallet = async () => {
+        const disconnect = await metaMask.disconnect();
+
+        if ( disconnect === undefined ) {
+            setWalletAddress(null);
         }
     }
 
@@ -114,7 +121,14 @@ export function AppSidebar() {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton className={walletAddress && 'bg-white text-black'} onClick={() => connectWallet()}>
+                        <SidebarMenuButton 
+                            className={walletAddress && 'bg-white text-black'} 
+                            onClick={() => !walletAddress && connectWallet()}
+                            style={{
+                                pointerEvents: walletAddress ? 'none' : '',
+                                userSelect: walletAddress ? 'none' : ''
+                            }}
+                        >
                             {walletAddress ? <div><span style={{
                                 borderRadius: '100%', 
                                 background: 'green', 
@@ -123,6 +137,14 @@ export function AppSidebar() {
                                 display: 'block'
                             }}></span></div> : <img style={{width: '17px'}} src={MetaMask} /> } <span className="w-40 overflow-hidden whitespace-nowrap text-ellipsis">{walletAddress ? walletAddress : 'Connect Wallet'}</span>
                         </SidebarMenuButton>
+                        
+                        {
+                            walletAddress &&
+
+                            <SidebarMenuButton onClick={disconnectWallet}>
+                                <LogOut /> Logout
+                            </SidebarMenuButton>
+                        }
                     </SidebarMenuItem>
                     <ConnectionStatus />
                 </SidebarMenu>

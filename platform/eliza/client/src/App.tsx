@@ -26,12 +26,14 @@ function App() {
     const getAccounts = async (mm: any) => {
         const provider = await mm?.getProvider();
         const accounts: any = await provider?.request({ 
-            method: "eth_requestAccounts" 
+            method: "eth_accounts" 
         });
 
         const account: string = accounts[0];
 
-        setWalletAddress(account);
+        if ( account ) {
+            setWalletAddress(account);
+        }
     }
 
     useEffect(() => {
