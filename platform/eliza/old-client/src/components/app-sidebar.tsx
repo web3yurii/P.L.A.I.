@@ -18,9 +18,6 @@ import { NavLink, useLocation } from "react-router";
 import type { UUID } from "@elizaos/core";
 import { Book, Cog, User } from "lucide-react";
 import ConnectionStatus from "./connection-status";
-import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
-import { MetaMaskSDK, SDKProvider } from "@metamask/sdk"
-import { useEffect, useState } from 'react'
 
 export function AppSidebar() {
     const location = useLocation();
@@ -28,12 +25,6 @@ export function AppSidebar() {
         queryKey: ["agents"],
         queryFn: () => apiClient.getAgents(),
         refetchInterval: 5_000,
-    });
-    const metaMask = new MetaMaskSDK({
-        dappMetadata: {
-            name: "Example JavaScript Dapp",
-            url: window.location.href
-        }
     });
 
     const agents = query?.data?.agents;
@@ -47,7 +38,7 @@ export function AppSidebar() {
                             <NavLink to="/">
                                 <img
                                     alt="elizaos-icon"
-                                    src="/plai-icon.svg"
+                                    src="/elizaos-icon.png"
                                     width="100%"
                                     height="100%"
                                     className="size-7"
@@ -55,7 +46,7 @@ export function AppSidebar() {
 
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold">
-                                        P.L.A.I.
+                                        ElizaOS
                                     </span>
                                     <span className="">v{info?.version}</span>
                                 </div>
@@ -109,11 +100,6 @@ export function AppSidebar() {
             </SidebarContent>
             <SidebarFooter>
                 <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton onClick={() => metaMask.connect()}>
-                            <img style={{width: '17px'}} src={MetaMask} /> Connect Wallet
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
                     <SidebarMenuItem>
                         <NavLink
                             to="https://elizaos.github.io/eliza/docs/intro/"
