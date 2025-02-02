@@ -44,3 +44,15 @@ export const startGame: Action = {
         },
     ],
 };
+```
+
+## How to run eliza UA character game example locally
+
+1. `cd platform/eliza/`
+2. `pnpm install && pnpm build`
+3. `pnpm start:client`
+4. `pnpm start --characters="characters/ua.character.json"`
+
+## Rivens AI agent already deployed to mainnet
+
+https://rivens.ai/agent/f4e89a5d-2fde-4fbe-84da-6a0a7ca18929
