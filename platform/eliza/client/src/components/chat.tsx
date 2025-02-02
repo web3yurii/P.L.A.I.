@@ -47,7 +47,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
     const { metaMask, walletAddress, setWalletAddress } = Storage();
-    const [cookies, setCookie] = useCookies(['is_game_paid']);
+    const [cookies, setCookie, removeCookie] = useCookies(['is_game_paid']);
     const { is_game_paid } = cookies;
     const game_paid = is_game_paid?.status && is_game_paid?.walletAddress === walletAddress;
 
@@ -139,14 +139,22 @@ export default function Page({ agentId }: { agentId: UUID }) {
             selectedFile?: File | null;
         }) => apiClient.sendMessage(agentId, message, walletAddress, selectedFile ),
         onSuccess: (newMessages: ContentWithUser[]) => {
+            console.log(newMessages);
+
             queryClient.setQueryData(
                 ["messages", agentId],
                 (old: ContentWithUser[] = []) => [
                     ...old.filter((msg) => !msg.isLoading),
-                    ...newMessages.map((msg) => ({
-                        ...msg,
-                        createdAt: Date.now(),
-                    })),
+                    ...newMessages.map((msg) => {
+                        if ( msg.action === 'END_GAME' ) {
+                            removeCookie('is_game_paid', {path: '/'});
+                        }
+
+                        return {
+                            ...msg,
+                            createdAt: Date.now(),
+                        }
+                    }),
                 ]
             );
         },
