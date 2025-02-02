@@ -16,36 +16,16 @@ import {
 import { apiClient } from "@/lib/api";
 import { NavLink, useLocation } from "react-router";
 import type { UUID } from "@elizaos/core";
-import { Book, Cog, LogOut, User } from "lucide-react";
+import { Book, Cog, User } from "lucide-react";
 import ConnectionStatus from "./connection-status";
-import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
-import { useEffect, useState } from 'react';
-import Storage from '../Storage';
 
 export function AppSidebar() {
-    const { metaMask, walletAddress, setWalletAddress } = Storage();
     const location = useLocation();
     const query = useQuery({
         queryKey: ["agents"],
         queryFn: () => apiClient.getAgents(),
         refetchInterval: 5_000,
     });
-
-    const connectWallet = async () => {
-        const connect = await metaMask.connect();
-
-        if ( connect.length !== 0 && (typeof connect[0] === 'string') ) {
-            setWalletAddress(connect[0]);
-        }
-    }
-
-    const disconnectWallet = async () => {
-        const disconnect = await metaMask.disconnect();
-
-        if ( disconnect === undefined ) {
-            setWalletAddress(null);
-        }
-    }
 
     const agents = query?.data?.agents;
 
@@ -58,7 +38,7 @@ export function AppSidebar() {
                             <NavLink to="/">
                                 <img
                                     alt="elizaos-icon"
-                                    src="/plai-icon.svg"
+                                    src="/elizaos-icon.png"
                                     width="100%"
                                     height="100%"
                                     className="size-7"
@@ -66,9 +46,9 @@ export function AppSidebar() {
 
                                 <div className="flex flex-col gap-0.5 leading-none">
                                     <span className="font-semibold">
-                                        P.L.A.I.
+                                        ElizaOS
                                     </span>
-                                    <span className="">v{info?.version} <span className="text-gray-400 text-xs">by M.A.N.Y.</span></span>
+                                    <span className="">v{info?.version}</span>
                                 </div>
                             </NavLink>
                         </SidebarMenuButton>
@@ -80,7 +60,7 @@ export function AppSidebar() {
                     <SidebarGroupLabel>Agents</SidebarGroupLabel>
                     <SidebarGroupContent>
                         <SidebarMenu>
-                            {agents?.length === 0 ? (
+                            {query?.isPending ? (
                                 <div>
                                     {Array.from({ length: 5 }).map(
                                         (_, _index) => (
@@ -121,30 +101,19 @@ export function AppSidebar() {
             <SidebarFooter>
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton 
-                            className={walletAddress && 'bg-white text-black'} 
-                            onClick={() => !walletAddress && connectWallet()}
-                            style={{
-                                pointerEvents: walletAddress ? 'none' : '',
-                                userSelect: walletAddress ? 'none' : ''
-                            }}
+                        <NavLink
+                            to="https://elizaos.github.io/eliza/docs/intro/"
+                            target="_blank"
                         >
-                            {walletAddress ? <div><span style={{
-                                borderRadius: '100%', 
-                                background: 'green', 
-                                width: '5px',
-                                height: '5px',
-                                display: 'block'
-                            }}></span></div> : <img style={{width: '17px'}} src={MetaMask} /> } <span className="w-40 overflow-hidden whitespace-nowrap text-ellipsis">{walletAddress ? walletAddress : 'Connect Wallet'}</span>
-                        </SidebarMenuButton>
-                        
-                        {
-                            walletAddress &&
-
-                            <SidebarMenuButton onClick={disconnectWallet}>
-                                <LogOut /> Logout
+                            <SidebarMenuButton>
+                                <Book /> Documentation
                             </SidebarMenuButton>
-                        }
+                        </NavLink>
+                    </SidebarMenuItem>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton disabled>
+                            <Cog /> Settings
+                        </SidebarMenuButton>
                     </SidebarMenuItem>
                     <ConnectionStatus />
                 </SidebarMenu>
