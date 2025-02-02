@@ -1,4 +1,5 @@
 *.ts
+!startGame.ts
 !index.ts
 !character.ts
 .env

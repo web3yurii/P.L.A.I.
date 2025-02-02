@@ -1,9 +1,6 @@
 {
     "name": "МайстерПідземелляAI",
-    "clients": [
-        "telegram",
-        "direct"
-    ],
+    "clients": ["telegram", "direct"],
     "modelProvider": "openai",
     "settings": {
         "secrets": {},
