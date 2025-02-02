@@ -24,6 +24,8 @@ import { AudioRecorder } from "./audio-recorder";
 import { Badge } from "./ui/badge";
 import { useAutoScroll } from "./ui/chat/hooks/useAutoScroll";
 import Storage from '../Storage';
+import { useCookies } from "react-cookie";
+import ButtonPayForGame from "./ui/pay-for-game-button";
 
 type ExtraContentFields = {
     user: string;
@@ -45,6 +47,9 @@ export default function Page({ agentId }: { agentId: UUID }) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const formRef = useRef<HTMLFormElement>(null);
     const { metaMask, walletAddress, setWalletAddress } = Storage();
+    const [cookies, setCookie] = useCookies(['is_game_paid']);
+    const { is_game_paid } = cookies;
+    const game_paid = is_game_paid?.status && is_game_paid?.walletAddress === walletAddress;
 
     const queryClient = useQueryClient();
 
@@ -177,7 +182,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
     return (
         <div className="flex flex-col w-full h-[calc(100dvh)] p-4">
-            {walletAddress ? 
+            {walletAddress && game_paid ? 
             
             <>
                 <div className="flex-1 overflow-y-auto">
@@ -378,7 +383,12 @@ export default function Page({ agentId }: { agentId: UUID }) {
                 </div>
             </>
                 
-            : <span className="absolute top-0 left-0 w-full h-screen flex items-center justify-center">Connect wallet to proceed</span> }
+            : 
+            
+            <span className="absolute w-full top-0 left-0 h-screen m-auto flex items-center justify-center">
+                { ! walletAddress ? 'Connect wallet to proceed' : ! game_paid ? <ButtonPayForGame agent={agentId} /> : '' }
+            </span> 
+            }
         </div>
     );
 }

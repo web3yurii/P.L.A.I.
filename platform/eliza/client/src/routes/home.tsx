@@ -15,6 +15,10 @@ import type { UUID } from "@elizaos/core";
 import { formatAgentName } from "@/lib/utils";
 import Storage from '../Storage';
 import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
+import { MetaMaskSDK, SDKProvider } from "@metamask/sdk";
+import { useCookies } from "react-cookie";
+import { useState } from "react";
+import ButtonPayForGame from "@/components/ui/pay-for-game-button";
 
 export default function Home() {
     const { metaMask, walletAddress, setWalletAddress } = Storage();
@@ -23,7 +27,7 @@ export default function Home() {
         queryFn: () => apiClient.getAgents(),
         refetchInterval: 5_000
     });
-
+    
     const agents = query?.data?.agents;
 
     return (
@@ -43,18 +47,10 @@ export default function Home() {
                             </div>
                         </CardContent>
                         <CardFooter>
-                            <div className="flex items-center gap-4 w-full justify-center">
+                            <div className="flex items-center gap-4 w-full m-auto justify-center">
                                 {walletAddress ? 
                                 
-                                <NavLink
-                                    to={`/chat/${agent.id}`}
-                                    className="w-full grow"
-                                >
-                                     <Button
-                                        variant="outline"
-                                        className="w-full grow"
-                                    >Chat</Button>
-                                </NavLink> : 
+                                <ButtonPayForGame className="w-full" agent={agent.id} /> : 
                                 
                                 <span className="text-center">Connect wallet to proceed</span>
                                 

@@ -21,9 +21,11 @@ import ConnectionStatus from "./connection-status";
 import MetaMask from "../components/ui/icons/meta-mask-logo.svg";
 import { useEffect, useState } from 'react';
 import Storage from '../Storage';
+import { useCookies } from "react-cookie";
 
 export function AppSidebar() {
     const { metaMask, walletAddress, setWalletAddress } = Storage();
+    const [cookies, setCookie, removeCookie] = useCookies(['is_game_paid']);
     const location = useLocation();
     const query = useQuery({
         queryKey: ["agents"],
@@ -43,6 +45,7 @@ export function AppSidebar() {
         const disconnect = await metaMask.disconnect();
 
         if ( disconnect === undefined ) {
+            // removeCookie('is_game_paid', { path: '/' });
             setWalletAddress(null);
         }
     }
