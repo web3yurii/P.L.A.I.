@@ -21,7 +21,7 @@ const isDataValid = (data: any): data is z.infer<typeof endGameSchema> => {
     return endGameSchema.safeParse(data).success;
 };
 
-export const startGame: Action = {
+export const endGame: Action = {
     name: "END_GAME",
     similes: ["FINISH_GAME", "END", "FINISH"],
     description: "Завершує гру, відправляючи користувачу токени.",
