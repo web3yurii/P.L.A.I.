@@ -107,6 +107,7 @@ export default function Page({ agentId }: { agentId: UUID }) {
 
         sendMessageMutation.mutate({
             message: input,
+            walletAddress: walletAddress,
             selectedFile: selectedFile ? selectedFile : null,
         });
 
@@ -126,10 +127,12 @@ export default function Page({ agentId }: { agentId: UUID }) {
         mutationFn: ({
             message,
             selectedFile,
+            walletAddress
         }: {
             message: string;
+            walletAddress: string;
             selectedFile?: File | null;
-        }) => apiClient.sendMessage(agentId, message, selectedFile),
+        }) => apiClient.sendMessage(agentId, message, walletAddress, selectedFile ),
         onSuccess: (newMessages: ContentWithUser[]) => {
             queryClient.setQueryData(
                 ["messages", agentId],
@@ -369,6 +372,8 @@ export default function Page({ agentId }: { agentId: UUID }) {
                                 <Send className="size-3.5" />
                             </Button>
                         </div>
+
+                        {walletAddress && <input type="hidden" name="walletAddress" value={walletAddress} />}
                     </form>
                 </div>
             </>
