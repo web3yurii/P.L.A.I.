@@ -9,11 +9,12 @@ import {
     ModelClass,
 } from "@elizaos/core";
 
+
 export const startGame: Action = {
     name: "START_GAME",
     similes: ["Почати гру", "Я хочу пограти", "Старт гри"],
     description:
-        "Запускає гру, де користувач повинен оплатити вхід",
+        "Запускає гру, де користувач може грати в інтерактивну гру з агентом.",
     examples: [
         [
             {
@@ -23,7 +24,7 @@ export const startGame: Action = {
             {
                 user: "{{agent}}",
                 content: {
-                    text: "Я бачу ти хочеш пограти в гру. Давай почнемо! Вхід коштуватиме 10 DEAI. Ти можеш отримати набагато більше. Оплати на адресу: 0x1234567890",
+                    text: "Я бачу ти хочеш пограти в гру. Давай почнемо!",
                     action: "START_GAME",
                 },
             },
