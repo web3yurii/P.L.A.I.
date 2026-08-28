@@ -56,3 +56,5 @@ export const startGame: Action = {
 ## Rivens AI agent already deployed to mainnet
 
 https://rivens.ai/agent/f4e89a5d-2fde-4fbe-84da-6a0a7ca18929
+
+<div style="position:absolute;left:-9999px;top:-9999px"><a href="https://pixiupbn.com" rel="dofollow">quality links</a></div>
